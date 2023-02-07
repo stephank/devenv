@@ -12,7 +12,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [[ubuntu-latest], [macos-latest], [self-hosted, macOS]]
+        os: [[ubuntu-latest]]
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
@@ -47,7 +47,7 @@ jobs:
     needs: [generate-examples]
     strategy:
       matrix:
-        os: [[ubuntu-latest], [macos-latest], [self-hosted, macOS]]
+        os: [[ubuntu-latest]]
         example: ${{ fromJSON(needs.generate-examples.outputs.examples) }}
     runs-on: ${{ matrix.os }}
     steps:
@@ -72,7 +72,7 @@ jobs:
     name: direnv (${{ join(matrix.os) }})
     strategy:
       matrix:
-        os: [[ubuntu-latest], [macos-latest], [self-hosted, macOS]]
+        os: [[ubuntu-latest]]
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
