@@ -46,6 +46,8 @@ let
       config.env;
 
   procfileLine = name: process: "${name}: exec " + (pkgs.writeShellScript name ''
+    set -euo pipefail
+
     ${process.before}
 
     ${process.exec}
