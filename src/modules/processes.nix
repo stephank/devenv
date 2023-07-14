@@ -8,6 +8,12 @@ let
         description = "Bash code to run the process.";
       };
 
+      before = lib.mkOption {
+        type = types.lines;
+        description = "Bash code to execute before starting the process.";
+        default = "";
+      };
+
       # TODO: Deprecate this option in favor of `process-managers.process-compose.settings.processes.${name}`.
       process-compose = lib.mkOption {
         type = types.attrs; # TODO: type this explicitly?
@@ -38,6 +44,12 @@ let
     lib.mapAttrsToList
       (name: value: "${name}=${builtins.toJSON value}")
       config.env;
+
+  procfileLine = name: process: "${name}: exec " + (pkgs.writeShellScript name ''
+    ${process.before}
+
+    ${process.exec}
+  '');
 in
 {
   options = {
@@ -120,8 +132,7 @@ in
 
     procfile =
       pkgs.writeText "procfile" (lib.concatStringsSep "\n"
-        (lib.mapAttrsToList (name: process: "${name}: exec ${pkgs.writeShellScript name process.exec}")
-          config.processes));
+        (lib.mapAttrsToList procfileLine config.processes));
 
     procfileEnv =
       pkgs.writeText "procfile-env" (lib.concatStringsSep "\n" envList);
